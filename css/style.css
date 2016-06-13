@@ -1,0 +1,74 @@
+body {
+	overflow: hidden;
+}
+.content {
+	position: relative;
+}
+.div-a {
+	position: absolute;
+	top:0;
+	left: 20px;
+	border:1px solid green;
+}
+.div-a button {
+	position: absolute;
+	
+	
+}
+.div-b {
+	position: absolute;
+	top: 550px;
+	left: 20px;
+	width: 800px;
+	height: 150px;
+	border: 1px solid blue;
+}
+.div-c {
+	position: absolute;
+	top: 0;
+	left: 620px;
+	width: 500px;
+	height: 500px;
+	border: 1px solid red;
+}
+#drawing {
+	position: absolute;
+	top: 0;
+	left: 0;
+	border: 1px solid black;
+}
+.div-b .drag-img{
+	position: absolute;
+	top: 20px;
+	width: 100px;
+	height: 100px;
+	cursor: move;
+	border: 1px solid yellow;
+}
+.pos-1 {
+	left: 50px;
+}
+.pos-2 {
+	left: 170px;
+}
+.pos-3 {
+	left: 290px;
+}
+.show_text{
+	position: absolute;
+	top: 0;
+	left: 550px;
+}
+.ofscanvas {
+	position: relative;
+}
+.ofscanvas:after {
+	position: absolute;
+	top:0;
+	left: 0;
+	display: inline-block;
+	content: " ";
+	width: 100px;
+	height: 30px;
+	background-image: url(../img/move_horizontal_alt_32px_1119874_easyicon.net.png);
+}
