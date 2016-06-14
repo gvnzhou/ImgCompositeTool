@@ -14,12 +14,12 @@ function getTop(e){
 //保存拼接图片
 function saveImg(canvas){
 
-	document.getElementById("div_c").innerHTML="";
+	document.getElementById("preview_img").innerHTML="";
 	var drawing = document.getElementById(canvas);
 
 	if(drawing.getContext){
 		var context = drawing.getContext("2d");
-		var oImg = document.getElementById("div_b").getElementsByClassName("ofscanvas");
+		var oImg = document.getElementById("img_list").getElementsByClassName("ofscanvas");
 		context.clearRect(0,0,drawing.width,drawing.height);
 		for(var i = 0;i < oImg.length;i++){
 			var x, y, w, h;
@@ -33,7 +33,7 @@ function saveImg(canvas){
 		var imgURL = drawing.toDataURL("image/png", 0.9);
 		var image = document.createElement("img");
 		image.src = imgURL;
-		document.getElementById("div_c").appendChild(image);
+		document.getElementById("preview_img").appendChild(image);
 	}
 	
 }

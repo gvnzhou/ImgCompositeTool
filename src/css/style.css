@@ -1,0 +1,141 @@
+* {
+	font-family: "微软雅黑";
+}
+body,
+div,
+h1,
+p {
+	margin: 0;
+	padding: 0;
+}
+img {
+	border: 0;
+}
+.clearfix:after {
+	content: "."; 
+	display: block; 
+	height: 0; 
+	visibility:hidden;
+	clear: both; 
+}
+.clearfix { 
+	*zoom:1; 
+}
+.container {
+	margin-left: 20px;
+	margin-top: 20px;
+}
+.container .edit-area {
+	float: left;
+	width: 650px;
+	height: 550px;
+	margin-right: 20px;
+}
+.edit-area h1,
+.preview-area h1,
+.img-list h1 {
+	font-size: 22px;
+	padding-left: 10px;
+	padding-top: 5px;
+	margin-bottom: 10px;
+}
+.edit-area .toolbar {
+	float: left;
+	width: 100px;
+	height: 490px;
+	padding-top: 10px;
+	text-align: center;
+	border: 2px solid #AAAAAB;
+	border-radius: 10px;
+	margin-right: 25px;
+}
+.edit-area .toolbar button {
+	margin-bottom: 10px;
+}
+.edit-area #drawing {
+	border: 2px solid #AAAAAB;
+	border-radius: 10px;
+}
+.container .preview-area {
+	float: left;
+	width: 500px;
+	height: 550px;
+}
+.preview-area .preview-img {
+	width: 500px;
+	height: 500px;
+	border: 2px solid #AAAAAB;
+	border-radius: 10px;
+}
+.container .img-list {
+	float: left;
+	position: relative;
+	margin-top: 30px;
+	width: 1240px;
+	height: 150px;
+	border: 2px solid #AAAAAB;
+	border-radius: 10px;
+}
+.img-list .drag-img {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100px;
+	height: 100px;
+	cursor: move;
+}
+.img-list .upload-img {
+	position: absolute;
+	top: 30px;
+	width: 100px;
+	height: 100px;
+	overflow: hidden;
+	text-align: center;
+	cursor: pointer;
+}
+.img-list .show {
+	overflow: visible;
+}
+.pos-1 {
+	left: 30px;
+}
+.pos-2 {
+	left: 150px;
+}
+.pos-3 {
+	left: 270px;
+}
+.pos-4 {
+	left: 390px;
+}
+.pos-5 {
+	left: 510px;
+}
+.pos-6 {
+	left: 630px;
+}
+.pos-7 {
+	left: 750px;
+}
+.pos-8 {
+	left: 870px;
+}
+.pos-9 {
+	left: 990px;
+}
+.pos-10 {
+	left: 1110px;
+}
+.ofscanvas {
+	position: relative;
+}
+.ofscanvas:after {
+	position: absolute;
+	top:0;
+	left: 0;
+	display: inline-block;
+	content: " ";
+	width: 100px;
+	height: 30px;
+	background-image: url(../img/move_horizontal_alt_32px_1119874_easyicon.net.png);
+}

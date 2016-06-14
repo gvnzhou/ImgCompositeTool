@@ -2,9 +2,9 @@ window.onload = main;
 
 // 获取canvas画布，创建2d上下文
 var canvas = $("drawing"),
-	context = canvas.getContext("2d");	
+		context = canvas.getContext("2d");	
 // 获取图库数组对象
-var aImg = $("div_b").getElementsByTagName("img");
+var aImg = $("img_list").getElementsByTagName("img");
 // 控制图片移动开关
 var flag = false;
 // 层关系
