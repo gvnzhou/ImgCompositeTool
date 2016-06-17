@@ -3,10 +3,8 @@
  * @param {[type]}
  */
 var uploadImg = (function() {
-  // 上传按钮图片
-  var subBtnImg = $$('.icon-plus-sign-alt');
-  // 上传按钮
-  var subBtn = $$('.file_input');
+
+  var imgList = $('#img_list');
 
   return {
     /**
@@ -15,20 +13,27 @@ var uploadImg = (function() {
      */
     initUploadBtn : function() {
       var me = this;
-
       // 监听上传按钮
-      Array.prototype.slice.call(subBtn).forEach(function(item, index){
-        eventUtil.addHandler(item, 'change', function(e) {
-          me.readAsDataURL(item);
-        }, false);
-      });
+      eventUtil.addHandler(imgList, 'change', function(e) {
+        if (e.target.nodeName.toLowerCase() === 'input') {
+          me.readAsDataURL(e.target);
+        }
+      }, false);
 
       // 关联上传按钮的图片与实际上传按钮
-      Array.prototype.slice.call(subBtnImg).forEach(function(item, index){
-        eventUtil.addHandler(item, 'click', function(e) {
-          e.target.nextSibling.click();
-        }, false);
-      });
+      eventUtil.addHandler(imgList, 'click', function(e) {
+        // 判断点击的是否是上传图片
+        if (e.target.getAttribute('data-icon')){
+          var nodeList = e.target.parentNode.childNodes;
+          // 遍历节点
+          for (var i = 0; i < nodeList.length; i++) {
+            if (nodeList[i].nodeName.toLowerCase() === 'input') {
+              nodeList[i].click();
+            }
+          }
+        }
+      }, false);
+
     },
 
     /**
@@ -47,18 +52,10 @@ var uploadImg = (function() {
       reader.readAsDataURL(file);  
       reader.onload=function(e){ 
         item.parentNode.style.overflow = 'visible';
-        item.parentNode.innerHTML = '<img src="' + this.result +'" class="drag-img" />';
+        item.parentNode.innerHTML = '<i class="icon-minus-sign del-icon"></i><img src="' + this.result +'" class="drag-img" />';
+        // 创建图片类
         
-        editor.initImgEditor();
       }  
-    },
-
-    /**
-     * 重置上传按钮  
-     * @param  提交按钮
-     */
-    resetUploadBtn:function() {
-
     },
 
     /**

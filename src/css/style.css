@@ -93,6 +93,13 @@ img {
 	text-align: center;
 	cursor: pointer;
 }
+.img-list .upload-img .del-icon {
+	display: none;
+	position: absolute;
+	top: -10px;
+	left: 90px;
+	z-index: 999;
+}
 .img-list .show {
 	overflow: visible;
 }

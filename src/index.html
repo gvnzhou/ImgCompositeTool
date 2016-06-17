@@ -11,9 +11,7 @@
 			<div class="edit-area" id="edit_area">
 				<h1>图片编辑区</h1>
 				<div class="toolbar">
-					<button onclick="javascript:saveImg('drawing');">撤销</button>
-					<button onclick="javascript:saveImg('drawing');">清空画布</button>
-					<button onclick="javascript:saveImg('drawing');">保存图片</button>
+					<button id="saveimg">保存图片</button>
 				</div>
 				<canvas id="drawing" width="500" height="500" >A drawing of something.</canvas>
 			</div>
@@ -25,34 +23,34 @@
 			<div class="img-list" id="img_list">
 				<h1>图库</h1>
 				<div class="pos-1 upload-img show">
-					<img src="img/1.jpg" class="drag-img" />
+					<i class="icon-minus-sign del-icon"></i><img src="img/1.jpg" class="drag-img" />
 				</div>
 				<div class="pos-2 upload-img show">
-					<img src="img/2.jpg" class="drag-img" />
+					<i class="icon-minus-sign del-icon"></i><img src="img/2.jpg" class="drag-img" />
 				</div>
 				<div class="pos-3 upload-img show">
-					<img src="img/3.jpg" class="drag-img" />
+					<i class="icon-minus-sign del-icon" ></i><img src="img/3.jpg" class="drag-img" />
 				</div>
 				<div class="pos-4 upload-img">
-					<i class="icon-plus-sign-alt icon-5x"></i><input type="file" class="file_input" />
+					<i class="icon-plus-sign-alt icon-5x" data-icon='upload'></i><input type="file" class="file_input" />
 				</div>
 				<div class="pos-5 upload-img">
-					<i class="icon-plus-sign-alt icon-5x"></i><input type="file" class="file_input" />
+					<i class="icon-plus-sign-alt icon-5x" data-icon='upload'></i><input type="file" class="file_input" />
 				</div> 
 				<div class="pos-6 upload-img">
-					<i class="icon-plus-sign-alt icon-5x"></i><input type="file" class="file_input" />
+					<i class="icon-plus-sign-alt icon-5x" data-icon='upload'></i><input type="file" class="file_input" />
 				</div> 
 				<div class="pos-7 upload-img">
-					<i class="icon-plus-sign-alt icon-5x"></i><input type="file" class="file_input" />
+					<i class="icon-plus-sign-alt icon-5x" data-icon='upload'></i><input type="file" class="file_input" />
 				</div>
 				<div class="pos-8 upload-img">
-					<i class="icon-plus-sign-alt icon-5x"></i><input type="file" class="file_input" />
+					<i class="icon-plus-sign-alt icon-5x" data-icon='upload'></i><input type="file" class="file_input" />
 				</div>
 				<div class="pos-9 upload-img">
-					<i class="icon-plus-sign-alt icon-5x"></i><input type="file" class="file_input" />
+					<i class="icon-plus-sign-alt icon-5x" data-icon='upload'></i><input type="file" class="file_input" />
 				</div>  
 				<div class="pos-10 upload-img">
-					<i class="icon-plus-sign-alt icon-5x"></i><input type="file" class="file_input" />
+					<i class="icon-plus-sign-alt icon-5x" data-icon='upload'></i><input type="file" class="file_input" />
 				</div>    
 			</div>
 		</div>
@@ -63,11 +61,10 @@
 		<script src="js/uploadimg.js" type="text/javascript" charset="utf-8"></script>
 		<script src="js/imgeditor.js" type="text/javascript" charset="utf-8"></script>
 		<script src="js/img.js" type="text/javascript" charset="utf-8"></script>
-		<!-- <script src="js/drag2.js" type="text/javascript" charset="utf-8"></script> -->
+
 		<script>
+			imgEditor.initImgEditor();
 			uploadImg.init();
-			var editor = new ImgEditor();
-			editor.initImgEditor();
 		</script>
 	</body>
 </html>

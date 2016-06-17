@@ -1,5 +1,5 @@
 // 获取canvas画布，创建2d上下文
-var canvas = $("drawing"),
+var canvas = $("#drawing"),
     context = canvas.getContext("2d");  
 
 // 旋转按钮大小
@@ -11,12 +11,16 @@ var Selected_Round_R = 10;
 function Img(ele) {
   // 控制图片移动开关
   this.flag = false;
-
+  // 图片节点
   this.ele = ele;
+  // 声明并创建图片副本
+  this.cImg = this.ele.cloneNode();
+  this.cImg.className +=" sImg"; 
+  this.ele.parentNode.appendChild(this.cImg);
 }
 
 /**
- *  初始化图片
+ *  初始化真正操作的图片
  */
 Img.prototype.initImg = function(e) {
   var me = this;
@@ -30,69 +34,46 @@ Img.prototype.initImg = function(e) {
   this.flag = true;
   
   ++zIndex;
-  this.ele.style.zIndex = zIndex;
+  this.cImg.style.zIndex = zIndex;
 
-  // 声明并创建图片副本对象
-  var cImg;
-  cImg = this.ele.cloneNode();
-  cImg.className +=" sImg"; 
-  this.ele.parentNode.appendChild(cImg);
-  
-  cImg.onmousemove = function (e){
+  eventUtil.addHandler(this.cImg, 'mousemove', function(e) {
     e.preventDefault();
     if(me.flag){
       this.style.left = parseInt(imgX) + e.clientX - dMouseX + "px";
       this.style.top = parseInt(imgY) + e.clientY - dMouseY + "px"; 
     }
-  }
+  }, false);
   
-  cImg.onmouseup = this.newOsc;
+  eventUtil.addHandler(this.cImg, 'mouseup', this.newOsc, false);
 
 };
 
 /**
- *  图片拖拽
+ * 创建离屏canvas，初始化各种操作事件
+ * @return {[type]}
  */
-Img.prototype.dragImg = function(e) {
-
-};
-
-/**
- *  拖拽合法区域判断
- */
-Img.prototype.isDragArea = function(e) {
-
-};
-
 Img.prototype.newOsc = function() {
-   // me指向图片副本
   var me = this;
-  me.onmousemove = null;
-  
-  flag = false;
-  
   // 角度
   var angle = 0;
   // 缩放比例
   var scale = 1;
-  // 编辑判断
-  var editAble = false;
   // 移动判断
   var moveAble = false;
   // 旋转判断
   var rotateAble = false;
 
+  this.flag = false;
+
   //鼠标放开后图片中心点在主画布里的坐标
-  var cImgPosX = getLeft(me) - getLeft(canvas) + me.width/2 ,
-    cImgPosY = getTop(me) - getTop(canvas) + me.height/2;
-  
-  editAble = cimgIsArea(cImgPosX ,cImgPosY);
-  
+  var cImgPosX = getLeft(this) - getLeft(canvas) + this.width/2,
+      cImgPosY = getTop(this) - getTop(canvas) + this.height/2;
+
   // 判断拖拽图片是否在编辑区
-  if(editAble){
+  if(isEditArea(cImgPosX ,cImgPosY)){
     
     // 将图片画在离屏canvas上
-    var res = imgInOfc(me);
+    var res = imgInOfc(this);
     var offscreenCanvas = res.canvas;
     var offscreenContext = res.context;
     
@@ -101,19 +82,18 @@ Img.prototype.newOsc = function() {
       return false;
     }
 
-    offscreenCanvas.onmouseover = function(e){
+    eventUtil.addHandler(offscreenCanvas, 'mouseover', function(e) {
       //画旋转按钮
-      drawRbtn(me,offscreenContext);  
-    }
-    
-    offscreenCanvas.onmouseleave = function(e){
-      var temp = this
-      delRbtn(temp,me,offscreenContext);
-    }
+      drawRbtn(me,offscreenContext);
+    }, false)
+
+    eventUtil.addHandler(offscreenCanvas, 'mouseleave', function(e) {
+      //删除旋转按钮
+      delRbtn(this,me,offscreenContext);
+    }, false)
     
     // 移动和旋转方法
-    offscreenCanvas.onmousedown = function(e){  
-      
+    eventUtil.addHandler(offscreenCanvas, 'mousedown', function(e) {
       // 记录鼠标按下时的坐标
       var dMouseX = e.clientX;
       var dMouseY = e.clientY;
@@ -132,7 +112,7 @@ Img.prototype.newOsc = function() {
       var P = convertCoor(x,y,angle);
       
       rotateAble = RTIsDown(me,P.x,P.y);
-      moveAble = imgIsDown(me,P.x,P.y)
+      moveAble = imgIsDown(me,P.x,P.y);
       
       if (rotateAble){
         this.style.cursor = "crosshair";
@@ -158,13 +138,13 @@ Img.prototype.newOsc = function() {
           this.style.cursor = "crosshair";
           
           var P = convertCoor(x, y, angle);
-          
-                newR = Math.atan2(P.x,-P.y);//在旋转前的canvas坐标系中 move的角度（因为旋钮在上方，所以跟，应该计算 在旋转前canvas坐标系中，鼠标位置和原点连线 与 y轴反方向的夹角）
-                angle+=newR;
-                
-                offscreenContext.clearRect(-this.width/2,-this.height/2,this.width,this.height);
-                offscreenContext.rotate(newR);
-          offscreenContext.drawImage(me,-parseInt(getCss(me,"width"))/2,-parseInt(getCss(me,"height"))/2,parseInt(getCss(me,"width")),parseInt(getCss(me,"height")));
+
+            newR = Math.atan2(P.x,-P.y);//在旋转前的canvas坐标系中 move的角度（因为旋钮在上方，所以跟，应该计算 在旋转前canvas坐标系中，鼠标位置和原点连线 与 y轴反方向的夹角）
+            angle+=newR;
+            
+            offscreenContext.clearRect(-this.width/2,-this.height/2,this.width,this.height);
+            offscreenContext.rotate(newR);
+            offscreenContext.drawImage(me,-parseInt(getCss(me,"width"))/2,-parseInt(getCss(me,"height"))/2,parseInt(getCss(me,"width")),parseInt(getCss(me,"height")));
           
           drawRbtn(me,offscreenContext);  
         } 
@@ -176,7 +156,9 @@ Img.prototype.newOsc = function() {
         moveAble = false;
         this.style.cursor = "auto";
       }
-    }
+    
+    }, false)
+    
   
     // 滚轮缩放
     offscreenCanvas.onmousewheel = offscreenCanvas.onwheel = function(e){
@@ -233,62 +215,27 @@ Img.prototype.newOsc = function() {
 };
 
 /**
- *  图片编辑
+ *  判断图片是否在可编辑区内
  */
-Img.prototype.editImg = function(e) {
-
-};
-
-/**
- *  图片删除
- */
-Img.prototype.editImg = function(e) {
-
-};
-
-// 为图片副本创建离屏canvas
-function newOsc(e) {  
-  
- 
-}
-//获取对象
-function $(id){
-  return document.getElementById(id);
-}
-//获取对象的样式值
-function getCss(o, prop){
-  return o.currentStyle ? o.currentStyle[prop] : document.defaultView.getComputedStyle(o, null)[prop];
-}
-//获取元素的横坐标 
-function getLeft(e){ 
-  var offset=e.offsetLeft; 
-  if(e.offsetParent!=null) offset+=this.getLeft(e.offsetParent); 
-  return offset; 
-}
-// 获取元素的纵坐标 
-function getTop(e){ 
-  var offset=e.offsetTop; 
-  if(e.offsetParent!=null) offset+=this.getTop(e.offsetParent); 
-  return offset; 
-}
-// 获取两点距离
-function getPointDistance(a,b){
-    var x1=a.x,y1=a.y,x2=b.x,y2=b.y;
-    var dd= Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1));
-    return dd;
-}
-// 判断是否在编辑区内
-function cimgIsArea(x, y){
+function isEditArea(x, y) {
   return( 0 < x && x < canvas.width ) && ( y > 0 && y < canvas.height );
 }
+
+// 获取两点距离
+function getPointDistance(a,b){
+  var x1=a.x,y1=a.y,x2=b.x,y2=b.y;
+  var dd= Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1));
+  return dd;
+}
+
 // 判断是否在旋转按钮内
 function RTIsDown(me,x,y){
-    var round_center={x:0,y:-me.height/2-Selected_Round_R};
-    var bool=getPointDistance({x:x,y:y},round_center)<=Selected_Round_R;
-    return bool;
+  var round_center={x:0,y:-me.height/2-Selected_Round_R};
+  var bool=getPointDistance({x:x,y:y},round_center)<=Selected_Round_R;
+  return bool;
 }
 function imgIsDown(me,x,y){
-    return (-me.width/2<=x && x<=me.width/2 && -me.height/2<y && y<=me.height/2);
+  return (-me.width/2<=x && x<=me.width/2 && -me.height/2<y && y<=me.height/2);
 }
 // 创建离屏canvas，将图片副本绘入
 function imgInOfc(img){
@@ -324,13 +271,13 @@ function imgInOfc(img){
 // 将坐标转换为以图片为中心的坐标
 function convertCoor(x,y,angle){
   if(angle!=0){
-        var len = Math.sqrt(x*x + y*y);
-        var oldR=Math.atan2(y,x);//屏幕坐标系中 PO与P点连线 与屏幕坐标系X轴的夹角弧度            
-        var newR =oldR-angle;//canvas坐标系中PO与P点连线 与canvas坐标系x轴的夹角弧度
-        x = len*Math.cos(newR);
-        y = len*Math.sin(newR);     
-    } 
-    return {x:x,y:y};
+    var len = Math.sqrt(x*x + y*y);
+    var oldR=Math.atan2(y,x);//屏幕坐标系中 PO与P点连线 与屏幕坐标系X轴的夹角弧度            
+    var newR =oldR-angle;//canvas坐标系中PO与P点连线 与canvas坐标系x轴的夹角弧度
+    x = len*Math.cos(newR);
+    y = len*Math.sin(newR);     
+  } 
+  return {x:x,y:y};
 }
 // 绘制旋转按钮
 function drawRbtn(me,offscreenContext){

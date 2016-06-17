@@ -35,13 +35,17 @@ var eventUtil = {
   }
 };
 
+//获取对象的样式值
+function getCss(o, prop){
+  return o.currentStyle ? o.currentStyle[prop] : document.defaultView.getComputedStyle(o, null)[prop];
+}
 //获取元素的横坐标 
 function getLeft(e){ 
   var offset=e.offsetLeft; 
   if(e.offsetParent!=null) offset+=this.getLeft(e.offsetParent); 
   return offset; 
 }
-//获取元素的纵坐标 
+// 获取元素的纵坐标 
 function getTop(e){ 
   var offset=e.offsetTop; 
   if(e.offsetParent!=null) offset+=this.getTop(e.offsetParent); 
