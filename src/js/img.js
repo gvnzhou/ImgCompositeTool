@@ -37,11 +37,12 @@ Img.prototype.initImg = function(e) {
   this.cImg.style.zIndex = zIndex;
 
   eventUtil.addHandler(this.cImg, 'mousemove', function(e) {
-    e.preventDefault();
     if(me.flag){
       this.style.left = parseInt(imgX) + e.clientX - dMouseX + "px";
       this.style.top = parseInt(imgY) + e.clientY - dMouseY + "px"; 
     }
+    e.preventDefault();
+    e.stopPropagation();
   }, false);
   
   eventUtil.addHandler(this.cImg, 'mouseup', this.newOsc, false);

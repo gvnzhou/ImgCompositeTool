@@ -458,11 +458,12 @@ Img.prototype.initImg = function(e) {
   this.cImg.style.zIndex = zIndex;
 
   eventUtil.addHandler(this.cImg, 'mousemove', function(e) {
-    e.preventDefault();
     if(me.flag){
       this.style.left = parseInt(imgX) + e.clientX - dMouseX + "px";
       this.style.top = parseInt(imgY) + e.clientY - dMouseY + "px"; 
     }
+    e.preventDefault();
+    e.stopPropagation();
   }, false);
   
   eventUtil.addHandler(this.cImg, 'mouseup', this.newOsc, false);
@@ -723,7 +724,6 @@ function drawImg(temp,offscreenContext,me,angle){
 
 // 编辑器能记录的最大操作数
 var EDIT_MAX_NUM = 10;
-;
 // 层关系
 var zIndex = 0;
 
@@ -736,52 +736,68 @@ var imgEditor = (function() {
   var editQueue = {};
   // 存储编辑器中的图片
   var imgObj = [];
-  // 编辑器中图片数量
-  var imgNum = 0;
+
+  // 编辑器中图片数量imgNum+1
+  var imgNum = 3;
   // 保存图片按钮
   var saveImg = $('#saveimg');
 
   return {
     initImgEditor: function (){
-      // 图片所有图片
-      var allImg = $$("#img_list .drag-img");
+      var me = this;
+      // 拖拽图片
+      var allImg = $$("#img_list .drag-img"); 
+      // 删除图标
       var allDelIcon = $$("#img_list .del-icon");
+      // 所有上传区域
       var imgBlock = $$(".upload-img");
-
+      // 图片区域
       var imgList = $('#img_list');
 
+      // 监听鼠标按下事件
+      eventUtil.addHandler(imgList, 'mousedown', function(e) {
+        // 按下图片，初始化图片。
+        if (e.target.className.toLowerCase() === 'drag-img') {
+          var dataNum = e.target.parentNode.getAttribute('data-num');
+          imgObj[dataNum] = new Img(e.target);
+          imgObj[dataNum].initImg(e);
+        }
 
-      // 监听图片按下事件
-      // eventUtil.addHandler(imgList, 'mousedown', function(e) {
+        // 按下删除图标，删除图片。
+        if (e.target.getAttribute('data-icon') && e.target.getAttribute('data-icon') === 'del') {
+          e.target.parentNode.style.overflow = 'hidden';
+          e.target.parentNode.innerHTML = '<i class="icon-plus-sign-alt icon-5x" data-icon="upload"></i><input type="file" class="file_input" />';
+        }
+      }, false);
 
-      //   if (e.target.nodeName.toLowCase() === 'img') {
 
-      //     imgObj.push(e.target);
-
-      //   }
-
-      // }, false);
-
-      for(var i = 0; i < allImg.length; i++){
-
-        (function(j) {
-          // 为每个img对象绑定鼠标点击事件
-          allImg[j].onmousedown = function(e) {
-            imgObj[j] = new Img(this);
-            imgObj[j].initImg(e);
+      // 监听鼠标悬停事件
+      eventUtil.addHandler(imgList, 'mouseover', function(e) {
+        if (e.target.className.toLowerCase() === 'drag-img') {
+          var nodeList = e.target.parentNode.childNodes;
+          // 遍历节点，找到删除图标
+          for (var i = 0; i < nodeList.length; i++) {
+            if (nodeList[i].nodeName.toLowerCase() === 'i') {
+              nodeList[i].style.display = "block";
+            }
           }
-          // 为每个img对象绑定删除事件
-          imgBlock[j].onmouseover = function(e) {
-            allDelIcon[j].style.display = "block";
-          }
-          // 为每个img对象绑定删除事件
-          allImg[j].onmouseleave = function(e) {
-            allDelIcon[j].style.display = "none";
-          }
+        }
+      }, false);
 
-        }(i));
-        
+      // 监听鼠标离开事件
+      for(var i = 0; i < imgBlock.length; i++) {
+        eventUtil.addHandler(imgBlock[i], 'mouseleave', function(e) {
+          var nodeList = e.target.childNodes;
+          var reg = /del-icon/;
+          // 遍历节点，找到删除图标
+          for (var i = 0; i < nodeList.length; i++) {
+            if (reg.test(nodeList[i].className)) {
+              nodeList[i].style.display = "none";
+            }
+          }
+        }, true);
       }
+      
       this.initToolBar();
 
     },
@@ -846,7 +862,7 @@ var uploadImg = (function() {
       // 关联上传按钮的图片与实际上传按钮
       eventUtil.addHandler(imgList, 'click', function(e) {
         // 判断点击的是否是上传图片
-        if (e.target.getAttribute('data-icon')){
+        if (e.target.getAttribute('data-icon') && e.target.getAttribute('data-icon') === 'upload'){
           var nodeList = e.target.parentNode.childNodes;
           // 遍历节点
           for (var i = 0; i < nodeList.length; i++) {
@@ -875,9 +891,7 @@ var uploadImg = (function() {
       reader.readAsDataURL(file);  
       reader.onload=function(e){ 
         item.parentNode.style.overflow = 'visible';
-        item.parentNode.innerHTML = '<i class="icon-minus-sign del-icon"></i><img src="' + this.result +'" class="drag-img" />';
-        // 创建图片类
-        
+        item.parentNode.innerHTML = '<i class="icon-minus-sign del-icon" data-icon="del"></i><img src="' + this.result +'" class="drag-img" />';
       }  
     },
 

@@ -23,7 +23,7 @@ var uploadImg = (function() {
       // 关联上传按钮的图片与实际上传按钮
       eventUtil.addHandler(imgList, 'click', function(e) {
         // 判断点击的是否是上传图片
-        if (e.target.getAttribute('data-icon')){
+        if (e.target.getAttribute('data-icon') && e.target.getAttribute('data-icon') === 'upload'){
           var nodeList = e.target.parentNode.childNodes;
           // 遍历节点
           for (var i = 0; i < nodeList.length; i++) {
@@ -52,9 +52,7 @@ var uploadImg = (function() {
       reader.readAsDataURL(file);  
       reader.onload=function(e){ 
         item.parentNode.style.overflow = 'visible';
-        item.parentNode.innerHTML = '<i class="icon-minus-sign del-icon"></i><img src="' + this.result +'" class="drag-img" />';
-        // 创建图片类
-        
+        item.parentNode.innerHTML = '<i class="icon-minus-sign del-icon" data-icon="del"></i><img src="' + this.result +'" class="drag-img" />';
       }  
     },
 
